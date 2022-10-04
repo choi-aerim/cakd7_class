@@ -1,4 +1,5 @@
---DMZ
+--DML--
+
 select * from book;
 select bookname, price from book;
 select publisher from book;
@@ -81,7 +82,7 @@ select custid, count(*) as 도서수량, sum(saleprice) as "총 판매액"
 from orders
 group by custid;
 
--- 과제: 가격이 8000원 이상인 도서를 구매한 고객에 대하여 고객별 주문 도서의 총 수량 구하기
+-- 과제1: 가격이 8000원 이상인 도서를 구매한 고객에 대하여 고객별 주문 도서의 총 수량 구하기
 -- 단, 두 권 이상 구매한 고객만 구하기
 SELECT custid, COUNT(*) AS "주문도서 총 수량"
 FROM orders
@@ -175,7 +176,7 @@ WHERE custid IN (SELECT custid FROM orders);
 -- 방법1
 SELECT name, address
 FROM customer
-WHERE custid in (SELECT custid FROM Orders);
+WHERE custid IN (SELECT custid FROM Orders);
 
 -- 방법2
 SELECT name, address
@@ -185,14 +186,3 @@ WHERE EXISTS (SELECT * FROM orders
 
 
 
--- DDL
-create table newbook(
-bookid  number,
-bookname    varchar2(20)   not null,
-publisher   varchar2(20)    unique,
-price   number default 10000    check(price>1000),
-primary key (bookid));
-
-desc newbook;
-
-drop table newbook;
