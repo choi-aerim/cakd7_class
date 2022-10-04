@@ -98,6 +98,4 @@ FROM orders
 WHERE saleprice > (SELECT MAX(saleprice) FROM orders WHERE custid = 3);
 
 
--- 과제8: lmembers 데이터를 고객별로 속성(성별, 나이, 거주지역) 구매합계(반기별), 평균구매(반기별), 구매빈도(반기별)을 출력
-
 
