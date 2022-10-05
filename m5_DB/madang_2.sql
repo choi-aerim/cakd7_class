@@ -32,6 +32,7 @@ SELECT * FROM customer;
 INSERT INTO customer VALUES(5, '박세리', '대한민국 대전', NULL);
 
 --과제4: customer 테이블에서 같은 성을 가진 사람이 몇 명이나 되는지 성별 인원수 구하기
+-- substr(문자열, 시작위치, 길이)
 SELECT SUBSTR(name,1,1) "성", count(*) "인원"
 FROM customer
 GROUP BY SUBSTR(name,1,1);
@@ -44,7 +45,8 @@ SELECT orderid, custid, bookid, saleprice, orderdate, orderdate+10 as "확정일자"
 FROM orders;
 
 -- 과제5: 2020년 7월 7일에 주문받은 도서의 주문번호, 주문일, 고객번호, 도서번호 모두 출력
-SELECT orderid 주문번호, TO_CHAR(orderdate,'yyyy-mm-dd dy') 주문일, custid 고객번호, bookid 도서번호
+-- dy: 월, 화, 수..../ day: 월요일, 화요일, 수요일...
+SELECT orderid 주문번호, TO_CHAR(orderdate,'yyyy-mm-dd day') 주문일, custid 고객번호, bookid 도서번호
 FROM orders
 WHERE orderdate = to_date('2020-07-07','yyyy-mm-dd');
 
@@ -96,6 +98,60 @@ WHERE custid in (SELECT custid FROM customer WHERE address LIKE '%대한민국%');
 SELECT orderid, saleprice
 FROM orders
 WHERE saleprice > (SELECT MAX(saleprice) FROM orders WHERE custid = 3);
+
+
+-- 과제8: 고객번호가 2 이하인 고객의 판매액을 출력(단, 고객이름과 고객별 판매액 포함)
+
+
+
+
+select * from customer;
+select * from orders;
+
+-- (+): 왼쪽걸 기준으로 함!
+select c.name, sum(o.saleprice)
+from orders o, customer c
+where c.custid = o.custid(+)
+group by c.name;
+
+-- null을 0으로 대체하고 오름차순 정렬하기
+SELECT c.name, NVL(SUM(saleprice),0) 고객별판매액
+FROM orders o, customer c
+WHERE c.custid = o.custid(+)
+GROUP BY c.name
+ORDER BY 고객별판매액;
+
+-- View는 가상의 테이블이라고 하며, 데이터는 없고 sql만 저장되어 있는 object
+-- View는 기본 테이블이나 뷰를 삭제하게 되면 해당 데이터를 기초로 한 다른 뷰들이 자동으로 삭제되고 alter 명령을 사용할 수 없음
+-- 내용을 수정하기 위해서는 drop & create를 반복해야하며, 원본 이름으로 생성할 수 없음
+-- 실무에서는 "vw_"접미사나 접두사를 붙여 만듬
+create view vw_customer
+as select *
+from customer
+where address like '%대한민국%';
+
+select * from vw_customer;
+
+
+
+select * from orders;
+select * from book;
+-- orders 테이블에서 고객이름과 도서이름을 바로 확인할 수 있는 뷰 생성하기
+CREATE VIEW vw_cust_book
+AS SELECT  c.name "고객이름", o.orderid "주문번호", b.bookname "도서이름", o.saleprice "주문액"
+FROM orders o, customer c, book b
+WHERE o.custid = c.custid and b.bookid = o.bookid;
+
+-- 김연아 고객이 구입한 도서의 주문번호, 도서이름, 주문액 출력
+SELECT  * 
+FROM vw_cust_book
+WHERE 고객이름 = '김연아';
+
+-- 앞서 생성한 뷰 삭제
+DROP VIEW vw_cust_book;
+
+
+
 
 
 

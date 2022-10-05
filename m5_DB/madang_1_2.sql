@@ -54,6 +54,7 @@ ALTER TABLE newbook DROP COLUMN isbn;
 ALTER TABLE newbook DROP PRIMARY KEY;
 -- PRIMARY KEY 지정
 ALTER TABLE newbook ADD PRIMARY KEY(bookid);
+ALTER TABLE newbook ADD CONSTRAINT "create pk" PRIMARY KEY(bookid);
 
 --과제3: newbook 테이블 삭제하기
 DROP TABLE newbook;
