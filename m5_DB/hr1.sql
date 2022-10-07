@@ -106,8 +106,15 @@ from employees;
 
 
 -- 과제4: 입사일 6개월 후 첫번째 월요일을 last_name 별로 출력
+-- 방법1
 select last_name, hire_date, add_months(hire_date, 6) "6개월 근무 후" ,
         to_char(trunc(add_months(hire_date, 6),'IW')+7, 'yyyy/mm/dd day') "6개월 근무 후 돌아오는 월요일" 
+from employees;
+
+-- 방법2
+select last_name, hire_date, add_months(hire_date, 6) "6개월 근무 후" ,
+        next_day(add_months(hire_date, 6),'월요일') "6개월 근무 후 돌아오는 월요일" ,
+        to_char(trunc(add_months(hire_date, 6),'IW')+7, 'yyyy/mm/dd day')
 from employees;
 
 
@@ -160,8 +167,12 @@ create table employee_salary
 as select employee_id, salary 
 from employees;
 
+
+
 -- 과제10: employee_salary 테이블에 first_name, last_name 컬럼 추가한 후 name으로 변경하여 출력
-alter table employee_salary add name varchar2(50);
+alter table employee_salary 
+add name varchar2(50);
+
 update employee_salary es
 set name = (select first_name ||' '|| last_name from employees e 
             where es.employee_id = e.employee_id);
